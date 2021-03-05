@@ -3,11 +3,10 @@ const dotenv = require("dotenv").config();
 const express = require("express");
 const userHandlers = require("./user/userHandlers.js");
 
-const uri = process.env.DB_URI;
-var db;
 async function main() {
   //Database setup
-
+  const uri = process.env.DB_URI;
+  let db;
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -21,7 +20,6 @@ async function main() {
   const app = express();
   app.use(express.json());
   app.post("/api/register", (req, res) => {
-    console.log("Ok");
     userHandlers.registerUser(db, req, res);
   });
 
