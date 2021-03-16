@@ -27,10 +27,6 @@ function registerUser(db, req, res) {
                                 "Sunteti deja inregistrat cu acest email in aplicatie!",
                         });
                     } else {
-                        var token = jwt.sign(
-                            { userID: ObjectID(data._id) },
-                            privateKey
-                        );
                         res.status(200).send({
                             response:
                                 "V-ati inregistrat cu succes! Va rugam verificati mailul pentru confirmare",
@@ -42,7 +38,6 @@ function registerUser(db, req, res) {
         } else {
             res.status(401).send({
                 reason: "Sunteti deja inregistrat cu acest email in aplicatie!",
-                jwt: token,
             });
         }
     });
@@ -56,7 +51,7 @@ function loginUser(db, req, res) {
             var token = jwt.sign({ userID: ObjectID(data._id) }, privateKey);
             res.status(200).send({
                 response: "V-ati autentificat cu succes!",
-                token,
+                jwt: token,
             });
         }
     });
