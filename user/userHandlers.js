@@ -19,6 +19,8 @@ function registerUser(db, req, res) {
                     grade: userData.grade,
                 },
                 (err, data) => {
+                    console.log(err);
+                    console.log(data);
                     if (err) {
                         res.status(401).send({
                             reason:
