@@ -2,6 +2,7 @@ const MongoClient = require("mongodb").MongoClient;
 const dotenv = require("dotenv").config();
 const express = require("express");
 const userHandlers = require("./user/userHandlers.js");
+var cors = require("cors");
 
 async function main() {
     //Database setup
@@ -18,6 +19,7 @@ async function main() {
     //Routes
 
     const app = express();
+    app.use(cors());
     app.use(express.json());
     app.post("/api/register", (req, res) => {
         userHandlers.registerUser(db, req, res);
