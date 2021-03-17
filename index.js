@@ -2,6 +2,7 @@ const MongoClient = require("mongodb").MongoClient;
 const dotenv = require("dotenv").config();
 const express = require("express");
 const userHandlers = require("./user/userHandlers.js");
+const messageHandlers = require("./messaging/messageHandlers.js");
 var cors = require("cors");
 
 async function main() {
@@ -33,6 +34,9 @@ async function main() {
         userHandlers.logoutUser(db, req, res);
     });
 
+    app.post("/api/sendMessage", (req, res) => {
+        messageHandlers.sendMessage(db, req, res);
+    });
     //Start server
     app.listen(8080, () => {
         console.log("started on 8080");
