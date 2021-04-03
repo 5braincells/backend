@@ -37,6 +37,10 @@ async function main() {
     app.post("/api/sendMessage", (req, res) => {
         messageHandlers.sendMessage(db, req, res);
     });
+
+    app.post("/api/getMessages", (req, res) => {
+        messageHandlers.getMessages(db, req, res);
+    });
     //Start server
     app.listen(8080, () => {
         console.log("started on 8080");

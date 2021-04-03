@@ -26,6 +26,7 @@ function sendMessage(db, req, res) {
                                 message: messageData.message,
                                 author: ObjectID(userID),
                                 time: Date.now(),
+                                category: messageData.category,
                             },
                             (err, data) => {
                                 if (err)
@@ -44,4 +45,16 @@ function sendMessage(db, req, res) {
         }
 }
 
+function getMessages(db, req, res) {
+    let index = parseInt(req.body.index);
+    let category = req.body.category;
+    let dataArray;
+    let data = db
+        .collection("messages")
+        .find({})
+        .toArray((err, items) => {
+            res.status(200).send(items);
+        });
+}
 exports.sendMessage = sendMessage;
+exports.getMessages = getMessages;
