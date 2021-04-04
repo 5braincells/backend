@@ -46,6 +46,12 @@ function sendMessage(db, req, res) {
                                 else {
                                     res.status(200).send({
                                         response: "Message sent",
+                                        messageData: {
+                                            message: messageData.message,
+                                            author: ObjectID(userID),
+                                            time: Date.now(),
+                                            category: messageData.category,
+                                        },
                                     });
                                 }
                             }
