@@ -6,8 +6,15 @@ function sendMessage(db, req, res) {
     let messageData = req.body.messageData;
     let userID = req.body.userID;
     let jwtDecoded;
-    if (req.body.jwt != null) jwtDecoded = jwt.verify(req.body.jwt, privateKey);
-    else {
+    if (req.body.jwt != null) {
+        try {
+            jwtDecoded = jwt.verify(req.body.jwt, privateKey);
+        } catch (err) {
+            console.log(err);
+            res.status(401).send({ reason: "JWT is not valid" });
+            return;
+        }
+    } else {
         res.status(401).send("No jwt sent");
         return;
     }
@@ -53,6 +60,7 @@ function getMessages(db, req, res) {
         .collection("messages")
         .find({})
         .toArray((err, items) => {
+            if (err) res.status(404).send("No good");
             res.status(200).send(items);
         });
 }
