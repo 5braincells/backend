@@ -5,6 +5,9 @@ const jwt = require("jsonwebtoken");
 function sendMessage(db, req, res) {
     let messageData = req.body.messageData;
     let userID = req.body.userID;
+    console.log(messageData);
+    console.log(userID);
+    console.log(req.body.jwt);
     let jwtDecoded;
     if (req.body.jwt != null) {
         try {
