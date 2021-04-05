@@ -52,18 +52,24 @@ function sendMessage(db, req, res) {
                                         reason: "Error occured sending message",
                                     });
                                 else {
-                                    pusher.trigger(
-                                        messageData.category,
-                                        "message",
-                                        {
-                                            message: {
-                                                message: messageData.message,
-                                                author: ObjectID(userID),
-                                                time: Date.now(),
-                                                category: messageData.category,
-                                            },
-                                        }
-                                    );
+                                    try {
+                                        pusher.trigger(
+                                            messageData.category,
+                                            "message",
+                                            {
+                                                message: {
+                                                    message:
+                                                        messageData.message,
+                                                    author: ObjectID(userID),
+                                                    time: Date.now(),
+                                                    category:
+                                                        messageData.category,
+                                                },
+                                            }
+                                        );
+                                    } catch (err) {
+                                        console.log(err);
+                                    }
                                     res.status(200).send({
                                         response: "Message sent",
                                         messageData: {
