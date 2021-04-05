@@ -1,7 +1,15 @@
 const privateKey = process.env.PRIVATE_KEY;
 const { ObjectID } = require("mongodb");
 const jwt = require("jsonwebtoken");
+const Pusher = require("pusher");
 
+const pusher = new Pusher({
+    appId: "1183448",
+    key: "199f3be29f697d6a62f3",
+    secret: "c3166677fe3561a1a4f3",
+    cluster: "eu",
+    useTLS: true,
+});
 function sendMessage(db, req, res) {
     let messageData = req.body.messageData;
     let userID = req.body.userID;
@@ -44,6 +52,18 @@ function sendMessage(db, req, res) {
                                         reason: "Error occured sending message",
                                     });
                                 else {
+                                    pusher.trigger(
+                                        messageData.category,
+                                        "message",
+                                        {
+                                            message: {
+                                                message: messageData.message,
+                                                author: ObjectID(userID),
+                                                time: Date.now(),
+                                                category: messageData.category,
+                                            },
+                                        }
+                                    );
                                     res.status(200).send({
                                         response: "Message sent",
                                         messageData: {
