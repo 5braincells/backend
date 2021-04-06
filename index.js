@@ -23,14 +23,14 @@ async function main() {
     ///Images folder setup
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, "images/");
+            cb(null, "files/");
         },
         filename: function (req, file, cb) {
-            cb(null, Date.now() + ".jpg"); //Appending .jpg
+            cb(null, Date.now() + file.originalname); //Appending .jpg
         },
     });
     const upload = multer({
-        dest: "images",
+        dest: "files",
         limits: {
             fileSize: 32000000,
         },
@@ -40,7 +40,7 @@ async function main() {
     //Routes
 
     const app = express();
-    app.use("/images", express.static(path.join(__dirname + "/images")));
+    app.use("/files", express.static(path.join(__dirname + "/files")));
 
     app.use(cors());
     app.use(express.json());
@@ -63,7 +63,9 @@ async function main() {
     app.post("/api/sendPicture", upload.single("image"), (req, res) => {
         messageHandlers.sendPicture(db, req, res);
     });
-
+    app.post("/api/sendFile", upload.single("file"), (req, res) => {
+        messageHandlers.sendFile(db, req, res);
+    });
     app.post("/api/getMessages", (req, res) => {
         messageHandlers.getMessages(db, req, res);
     });
