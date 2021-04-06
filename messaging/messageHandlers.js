@@ -105,9 +105,10 @@ function getMessages(db, req, res) {
 function sendPicture(db, req, res) {
     let filename = req.file.filename;
     let userID = req.body.userID;
-    let jwt = req.body.jwt;
+    let JWT = req.body.jwt;
+    let messageData = JSON.parse(req.body.messageData);
     let jwtDecoded;
-    if (jwt && userID && filename) {
+    if (JWT && userID && filename) {
         try {
             jwtDecoded = jwt.verify(req.body.jwt, privateKey);
         } catch (err) {
