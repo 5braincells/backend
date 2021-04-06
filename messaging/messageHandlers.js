@@ -95,7 +95,7 @@ function getMessages(db, req, res) {
     let dataArray;
     let data = db
         .collection("messages")
-        .find({})
+        .find({ category: category })
         .toArray((err, items) => {
             if (err) res.status(404).send("No good");
             res.status(200).send(items);
