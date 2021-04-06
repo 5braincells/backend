@@ -170,6 +170,75 @@ function sendPicture(db, req, res) {
         return;
     }
 }
+function sendFile(db, req, res) {
+    let filename = req.file.filename;
+    let userID = req.body.userID;
+    let JWT = req.body.jwt;
+    let messageData = { type: req.body.type, category: req.body.category };
+    let jwtDecoded;
+    if (JWT && userID && filename) {
+        try {
+            jwtDecoded = jwt.verify(req.body.jwt, privateKey);
+        } catch (err) {
+            console.log(err);
+            res.status(401).send({ reason: "JWT is not valid" });
+            return;
+        }
+        if (ObjectID(jwtDecoded.userID) == userID) {
+            db.collection("Users").findOne(
+                { _id: ObjectID(jwtDecoded.userID) },
+                (err, data) => {
+                    if (err) {
+                        res.status(401).send({
+                            reason: "UserID does not exist",
+                        });
+                    } else {
+                        db.collection("messages").insertOne(
+                            {
+                                type: "file",
+                                filename: filename,
+                                author: ObjectID(userID),
+                                time: Date.now(),
+                                category: messageData.category,
+                            },
+                            (err, data) => {
+                                if (err) {
+                                    res.status(401).send({
+                                        reason: "Database error",
+                                    });
+                                } else {
+                                    try {
+                                        pusher.trigger(
+                                            messageData.category,
+                                            "message",
+                                            {
+                                                message: {
+                                                    type: "file",
+                                                    filename: filename,
+                                                    author: ObjectID(userID),
+                                                    time: Date.now(),
+                                                    category:
+                                                        messageData.category,
+                                                },
+                                            }
+                                        );
+                                    } catch (err) {
+                                        console.log(err);
+                                    }
+                                    res.status(200).send("Document sent");
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    } else {
+        res.status(401).send({ reason: "Missing data" });
+        return;
+    }
+}
 exports.sendMessage = sendMessage;
 exports.getMessages = getMessages;
 exports.sendPicture = sendPicture;
+exports.sendFile = sendFile;
