@@ -106,7 +106,7 @@ function sendPicture(db, req, res) {
     let filename = req.file.filename;
     let userID = req.body.userID;
     let JWT = req.body.jwt;
-    let messageData = JSON.parse(req.body.messageData);
+    let messageData = { type: req.body.type, category: req.body.category };
     let jwtDecoded;
     if (JWT && userID && filename) {
         try {
