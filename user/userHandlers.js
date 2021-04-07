@@ -37,6 +37,9 @@ function registerUser(db, req, res) {
                             response:
                                 "V-ati inregistrat cu succes! Va rugam verificati mailul pentru confirmare",
                             jwt: token,
+                            grade: data.grade,
+                            firstName: data.firstName,
+                            lastName: data.lastName,
                         });
                     }
                 }
