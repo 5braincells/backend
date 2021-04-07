@@ -58,10 +58,28 @@ function loginUser(db, req, res) {
             res.status(200).send({
                 response: "V-ati autentificat cu succes!",
                 jwt: token,
+                grade: data.grade,
+                firstName: data.firstName,
+                lastName: data.lastName,
             });
         }
     });
 }
 
+function getProfile(db, req, res) {
+    let userID = req.params.id;
+    db.collection("Users").findOne({ _id: ObjectID(userID) }, (err, data) => {
+        if (err)
+            res.status(401).send({
+                reason: "No user exists with the specified ID",
+            });
+        else {
+            delete data.password;
+            delete data.email;
+            res.status(200).send(data);
+        }
+    });
+}
 exports.registerUser = registerUser;
 exports.loginUser = loginUser;
+exports.getProfile = getProfile;
