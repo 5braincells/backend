@@ -54,6 +54,7 @@ function registerUser(db, req, res) {
 
 function loginUser(db, req, res) {
     let userData = req.body.userData;
+    console.log(userData);
     db.collection("Users").findOne({ email: userData.email }, (err, data) => {
         if (err) res.status(401).send("Nu aveti cont in aplicatie");
         else if (sha256.x2(userData.password) === data.password) {
@@ -76,10 +77,12 @@ function getProfile(db, req, res) {
             res.status(401).send({
                 reason: "No user exists with the specified ID",
             });
-        else {
+        else if (data) {
             delete data.password;
             delete data.email;
             res.status(200).send(data);
+        } else {
+            res.status(401).send("oops");
         }
     });
 }
