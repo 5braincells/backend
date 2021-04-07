@@ -56,6 +56,9 @@ async function main() {
         userHandlers.logoutUser(db, req, res);
     });
 
+    app.get("/api/profile/:id", (req, res) => {
+        userHandlers.getProfile(db, req, res);
+    });
     app.post("/api/sendMessage", (req, res) => {
         messageHandlers.sendMessage(db, req, res);
     });
