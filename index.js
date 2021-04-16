@@ -80,7 +80,11 @@ async function main() {
     const server = app.listen(8080, () => {
         console.log("started on 8080");
     });
-    const io = socket(server);
+    const io = socket(server, {
+        cors: {
+            origin: "*",
+        },
+    });
 
     io.on("connection", (socket) => {
         socket.on("join room", (roomID) => {
