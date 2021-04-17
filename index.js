@@ -76,6 +76,9 @@ async function main() {
     app.post("/api/getMessages", (req, res) => {
         messageHandlers.getMessages(db, req, res);
     });
+    app.post("/api/deleteMessage", (req, res) => {
+        messageHandlers.deleteMessage(db, req, res);
+    });
     //Start server
     const server = app.listen(8080, () => {
         console.log("started on 8080");
