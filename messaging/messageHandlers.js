@@ -59,6 +59,7 @@ function sendMessage(db, req, res) {
                                             "message",
                                             {
                                                 message: {
+                                                    _id: data._id,
                                                     type: "msg",
                                                     message:
                                                         messageData.message,
@@ -88,7 +89,34 @@ function sendMessage(db, req, res) {
             );
         }
 }
-
+function deleteMessage(db, req, res) {
+    let id = req.body.id;
+    let userID = req.body.userID;
+    let jwtUser = req.body.jwt;
+    let messageData = req.body.messageData;
+    let jwtDecoded;
+    if (jwtUser) {
+        try {
+            jwtDecoded = jwt.verify(jwtUser, privateKey);
+        } catch {
+            res.status(401).send({ error: "jwt is not valid" });
+        }
+        if (userID === jwtDecoded.userID && ObjectID(userID)) {
+            db.collection("messages").deleteOne({ _id: ObjectID(id) });
+            pusher.trigger(messageData.category, "message", {
+                message: {
+                    type: "msgDelete",
+                    _id: ObjectID(id),
+                },
+            });
+            res.status(200).send("ok");
+        } else {
+            res.status(401).send({
+                error: "permission denied, userID and jwt do not match",
+            });
+        }
+    } else res.status(200).send({ error: "No jwt" });
+}
 function getMessages(db, req, res) {
     let index = parseInt(req.body.index);
     let category = req.body.category;
@@ -241,4 +269,5 @@ function sendFile(db, req, res) {
 exports.sendMessage = sendMessage;
 exports.getMessages = getMessages;
 exports.sendPicture = sendPicture;
+exports.deleteMessage = deleteMessage;
 exports.sendFile = sendFile;
