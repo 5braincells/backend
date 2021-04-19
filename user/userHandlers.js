@@ -1,7 +1,7 @@
 const sha256 = require("sha256");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config();
-const { ObjectID } = require("mongodb");
+const { ObjectID, Db } = require("mongodb");
 
 const privateKey = process.env.PRIVATE_KEY;
 
@@ -86,6 +86,40 @@ function getProfile(db, req, res) {
         }
     });
 }
+
+function getGeneralData(db, req, res, cache) {
+    let generalData = cache.get("generalData");
+    console.log(generalData);
+    if (generalData == undefined) {
+        console.log("nice");
+        db.collection("Users")
+            .countDocuments({})
+            .then((data) => {
+                db.collection("messages")
+                    .countDocuments({})
+                    .then((msgdata) => {
+                        db.collection("Users")
+                            .findOne({}, { sort: { _id: -1 }, limit: 1 })
+                            .then((user) => {
+                                delete user.password;
+                                delete user.email;
+                                delete user._id;
+                                res.status(200).send({
+                                    users: data,
+                                    messages: msgdata,
+                                    lastUser: user,
+                                });
+                                cache.set("generalData", {
+                                    users: data,
+                                    messages: msgdata,
+                                    lastUser: user,
+                                });
+                            });
+                    });
+            });
+    } else res.status(200).send(generalData);
+}
 exports.registerUser = registerUser;
 exports.loginUser = loginUser;
 exports.getProfile = getProfile;
+exports.getGeneralData = getGeneralData;

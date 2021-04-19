@@ -6,6 +6,7 @@ const messageHandlers = require("./messaging/messageHandlers.js");
 const path = require("path");
 const multer = require("multer");
 var cors = require("cors");
+const NodeCache = require("node-cache");
 const socket = require("socket.io");
 const users = {};
 
@@ -23,6 +24,7 @@ async function main() {
     await client.connect();
 
     db = client.db("StudyRooms");
+    const cache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
 
     ///Images folder setup
     var storage = multer.diskStorage({
@@ -78,6 +80,9 @@ async function main() {
     });
     app.post("/api/deleteMessage", (req, res) => {
         messageHandlers.deleteMessage(db, req, res);
+    });
+    app.get("/api/generalData", (req, res) => {
+        userHandlers.getGeneralData(db, req, res, cache);
     });
     //Start server
     const server = app.listen(8080, () => {
