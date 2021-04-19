@@ -119,6 +119,7 @@ function deleteMessage(db, req, res) {
 }
 function getMessages(db, req, res) {
     let index = parseInt(req.body.index);
+    if (index === undefined) index = 0;
     let category = req.body.category;
     let dataArray;
     let data = db
