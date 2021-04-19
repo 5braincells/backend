@@ -39,62 +39,55 @@ function sendMessage(db, req, res) {
                     if (data == null || err)
                         res.status(401).send({ reason: "UserId is not valid" });
                     else
-                        db.collection("messages")
-                            .insertOne(
-                                {
-                                    type: "msg",
-                                    message: messageData.message,
-                                    author: ObjectID(userID),
-                                    time: Date.now(),
-                                    category: messageData.category,
-                                },
-                                (err, data2) => {
-                                    console.log(data2);
-                                    if (err)
-                                        res.status(401).send({
-                                            reason:
-                                                "Error occured sending message",
-                                        });
-                                    else {
-                                        try {
-                                            console.log(data2);
-                                            pusher.trigger(
-                                                messageData.category,
-                                                "message",
-                                                {
-                                                    message: {
-                                                        id: data2._id,
-                                                        type: "msg",
-                                                        message:
-                                                            messageData.message,
-                                                        author: ObjectID(
-                                                            userID
-                                                        ),
-                                                        time: Date.now(),
-                                                        category:
-                                                            messageData.category,
-                                                    },
-                                                }
-                                            );
-                                        } catch (err) {
-                                            console.log(err);
-                                        }
-                                        res.status(200).send({
-                                            response: "Message sent",
-                                            messageData: {
-                                                _id: data2._id,
-                                                message: messageData.message,
-                                                author: ObjectID(userID),
-                                                time: Date.now(),
-                                                category: messageData.category,
-                                            },
-                                        });
+                        db.collection("messages").insertOne(
+                            {
+                                type: "msg",
+                                message: messageData.message,
+                                author: ObjectID(userID),
+                                time: Date.now(),
+                                category: messageData.category,
+                            },
+                            (err, data2) => {
+                                console.log(data2);
+                                if (err)
+                                    res.status(401).send({
+                                        reason: "Error occured sending message",
+                                    });
+                                else {
+                                    try {
+                                        console.log(data2);
+                                        pusher.trigger(
+                                            messageData.category,
+                                            "message",
+                                            {
+                                                message: {
+                                                    id: data2._id,
+                                                    type: "msg",
+                                                    message:
+                                                        messageData.message,
+                                                    author: ObjectID(userID),
+                                                    time: Date.now(),
+                                                    category:
+                                                        messageData.category,
+                                                },
+                                            }
+                                        );
+                                    } catch (err) {
+                                        console.log(err);
                                     }
+                                    res.status(200).send({
+                                        response: "Message sent",
+                                        messageData: {
+                                            _id: data2._id,
+                                            message: messageData.message,
+                                            author: ObjectID(userID),
+                                            time: Date.now(),
+                                            category: messageData.category,
+                                        },
+                                    });
                                 }
-                            )
-                            .then((result) => {
-                                console.log(result);
-                            });
+                            }
+                        );
                 }
             );
         }
