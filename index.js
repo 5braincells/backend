@@ -6,6 +6,7 @@ const messageHandlers = require("./messaging/messageHandlers.js");
 const path = require("path");
 const multer = require("multer");
 var cors = require("cors");
+const NodeCache = require("node-cache");
 const socket = require("socket.io");
 const users = {};
 
@@ -78,6 +79,9 @@ async function main() {
     });
     app.post("/api/deleteMessage", (req, res) => {
         messageHandlers.deleteMessage(db, req, res);
+    });
+    app.get("/api/generalData", (req, res) => {
+        userHandlers.getGeneralData(db, req, res);
     });
     //Start server
     const server = app.listen(8080, () => {
