@@ -48,7 +48,6 @@ function sendMessage(db, req, res) {
                                 category: messageData.category,
                             },
                             (err, data2) => {
-                                console.log(data2);
                                 if (err)
                                     res.status(401).send({
                                         reason: "Error occured sending message",
@@ -61,7 +60,7 @@ function sendMessage(db, req, res) {
                                             "message",
                                             {
                                                 message: {
-                                                    id: data2._id,
+                                                    id: data2.insertedId,
                                                     type: "msg",
                                                     message:
                                                         messageData.message,
@@ -78,7 +77,7 @@ function sendMessage(db, req, res) {
                                     res.status(200).send({
                                         response: "Message sent",
                                         messageData: {
-                                            _id: data2._id,
+                                            _id: data2.insertedId,
                                             message: messageData.message,
                                             author: ObjectID(userID),
                                             time: Date.now(),
