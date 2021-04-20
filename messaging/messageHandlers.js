@@ -60,7 +60,7 @@ function sendMessage(db, req, res) {
                                             "message",
                                             {
                                                 message: {
-                                                    id: data2.insertedId,
+                                                    _id: data2.insertedId,
                                                     type: "msg",
                                                     message:
                                                         messageData.message,
