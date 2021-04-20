@@ -70,21 +70,28 @@ function loginUser(db, req, res) {
     });
 }
 
-function getProfile(db, req, res) {
+function getProfile(db, req, res, cache) {
     let userID = req.params.id;
-    db.collection("Users").findOne({ _id: ObjectID(userID) }, (err, data) => {
-        if (err)
-            res.status(401).send({
-                reason: "No user exists with the specified ID",
-            });
-        else if (data) {
-            delete data.password;
-            delete data.email;
-            res.status(200).send(data);
-        } else {
-            res.status(401).send("oops");
-        }
-    });
+    let userData = cache.get(req.params.id);
+    if (userData == undefined) {
+        db.collection("Users").findOne(
+            { _id: ObjectID(userID) },
+            (err, data) => {
+                if (err)
+                    res.status(401).send({
+                        reason: "No user exists with the specified ID",
+                    });
+                else if (data) {
+                    delete data.password;
+                    delete data.email;
+                    cache.set(userID, data, 10000);
+                    res.status(200).send(data);
+                } else {
+                    res.status(401).send("oops");
+                }
+            }
+        );
+    } else res.status(200).send(userData);
 }
 
 function getGeneralData(db, req, res, cache) {
