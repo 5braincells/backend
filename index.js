@@ -24,7 +24,7 @@ async function main() {
     await client.connect();
 
     db = client.db("StudyRooms");
-    const cache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+    const cache = new NodeCache({ stdTTL: 10000, checkperiod: 12000 });
 
     ///Images folder setup
     var storage = multer.diskStorage({
@@ -63,7 +63,7 @@ async function main() {
     });
 
     app.get("/api/profile/:id", (req, res) => {
-        userHandlers.getProfile(db, req, res);
+        userHandlers.getProfile(db, req, res, cache);
     });
     app.post("/api/sendMessage", (req, res) => {
         messageHandlers.sendMessage(db, req, res);
