@@ -56,7 +56,7 @@ function loginUser(db, req, res) {
     let userData = req.body.userData;
     console.log(userData);
     db.collection("Users").findOne({ email: userData.email }, (err, data) => {
-        if (err) res.status(401).send("Nu aveti cont in aplicatie");
+        if (err) res.status(401).send({ reason: "Nu aveti cont in aplicatie" });
         else if (sha256.x2(userData.password) === data.password) {
             var token = jwt.sign({ userID: ObjectID(data._id) }, privateKey);
             res.status(200).send({
@@ -66,6 +66,8 @@ function loginUser(db, req, res) {
                 firstName: data.firstName,
                 lastName: data.lastName,
             });
+        } else {
+            res.status(401).send({ reason: "Mailul sau parola sunt gresite" });
         }
     });
 }
