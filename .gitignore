@@ -2,3 +2,5 @@ node_modules
 .vscode
 .env
 images
+/keymanager/node_modules
+/keymanager/package-lock.json
