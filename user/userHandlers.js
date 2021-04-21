@@ -57,18 +57,30 @@ function loginUser(db, req, res) {
     console.log(userData);
     db.collection("Users").findOne({ email: userData.email }, (err, data) => {
         console.log(data);
-        if (err) res.status(401).send({ reason: "Nu aveti cont in aplicatie" });
-        else if (sha256.x2(userData.password) === data.password) {
-            var token = jwt.sign({ userID: ObjectID(data._id) }, privateKey);
-            res.status(200).send({
-                response: "V-ati autentificat cu succes!",
-                jwt: token,
-                grade: data.grade,
-                firstName: data.firstName,
-                lastName: data.lastName,
-            });
+        if (data) {
+            if (err)
+                res.status(401).send({ reason: "Nu aveti cont in aplicatie" });
+            else if (sha256.x2(userData.password) === data.password) {
+                var token = jwt.sign(
+                    { userID: ObjectID(data._id) },
+                    privateKey
+                );
+                res.status(200).send({
+                    response: "V-ati autentificat cu succes!",
+                    jwt: token,
+                    grade: data.grade,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                });
+            } else {
+                res.status(401).send({
+                    reason: "Mailul sau parola sunt gresite",
+                });
+            }
         } else {
-            res.status(401).send({ reason: "Mailul sau parola sunt gresite" });
+            res.status(401).send({
+                reason: "Nu exista un cont cu acest email",
+            });
         }
     });
 }
