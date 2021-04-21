@@ -65,6 +65,9 @@ async function main() {
     app.get("/api/profile/:id", (req, res) => {
         userHandlers.getProfile(db, req, res, cache);
     });
+    app.post("/api/changeProfile", (req, res) => {
+        userHandlers.changeProfile(db, req, res);
+    });
     app.post("/api/sendMessage", (req, res) => {
         messageHandlers.sendMessage(db, req, res);
     });
