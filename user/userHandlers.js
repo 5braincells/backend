@@ -108,7 +108,28 @@ function getProfile(db, req, res, cache) {
         );
     } else res.status(200).send(userData);
 }
-
+function changeProfile(db, req, res) {
+    let userID = req.body.userID;
+    let userJwt = req.body.jwt;
+    let changes = req.body.changes;
+    if (userID && userJwt) {
+        try {
+            jwtDecoded = jwt.verify(userJwt, privateKey);
+        } catch (e) {
+            res.status(401).send({ reason: "Jwt not valid" });
+        }
+        if (jwtDecoded.userID == userID) {
+            console.log(changes);
+            db.collection("Users").updateOne(
+                { _id: ObjectID(userID) },
+                { $set: changes },
+                (err, data) => {
+                    res.status(200).send("Changes done");
+                }
+            );
+        }
+    } else res.status(401).send({ reason: "missing data" });
+}
 function getGeneralData(db, req, res, cache) {
     let generalData = cache.get("generalData");
     console.log(generalData);
@@ -145,3 +166,4 @@ exports.registerUser = registerUser;
 exports.loginUser = loginUser;
 exports.getProfile = getProfile;
 exports.getGeneralData = getGeneralData;
+exports.changeProfile = changeProfile;
