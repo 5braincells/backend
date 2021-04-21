@@ -56,6 +56,7 @@ function loginUser(db, req, res) {
     let userData = req.body.userData;
     console.log(userData);
     db.collection("Users").findOne({ email: userData.email }, (err, data) => {
+        console.log(data);
         if (err) res.status(401).send({ reason: "Nu aveti cont in aplicatie" });
         else if (sha256.x2(userData.password) === data.password) {
             var token = jwt.sign({ userID: ObjectID(data._id) }, privateKey);
