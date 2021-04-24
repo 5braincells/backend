@@ -167,10 +167,13 @@ function getGeneralData(db, req, res, cache) {
 }
 function confirmAccount(db, req, res) {
   let id = req.params.id;
+  console.log(id);
   db.collection("Users").updateOne(
     { _id: id },
     { $set: { confirmed: true } },
     (err, data) => {
+      console.log(data);
+      console.log(err);
       res.status(200).send("Confirmed!");
     }
   );
