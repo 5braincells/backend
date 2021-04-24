@@ -169,7 +169,7 @@ function confirmAccount(db, req, res) {
   let id = req.params.id;
   console.log(id);
   db.collection("Users").updateOne(
-    { _id: id },
+    { _id: ObjectID(id) },
     { $set: { confirmed: true } },
     (err, data) => {
       console.log(data);
